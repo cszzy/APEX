@@ -26,7 +26,7 @@
 #define ALEX_SAFE_LOOKUP 1
 #define STASH_COEFFICIENT 1.5
 
-namespace alex {
+namespace apex {
 uint64_t model_node_num = 0;
 uint64_t model_node_size = 0;
 

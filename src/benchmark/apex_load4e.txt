@@ -1,0 +1,21 @@
+2022年 05月 11日 星期三 15:46:20 CST
+THREAD NUMBER:         1
+LOAD_SIZE:             400000000
+PUT_SIZE:              10000000
+GET_SIZE:              10000000
+DB  name:              apex
+Workload:              /home/zzy/dataset/asia-latest.csv
+read 460000000 values from /home/zzy/dataset/generate_random_ycsb.dat in 2290 ms (200.873 M values/s)
+creating a new pool
+pool opened at: 0x7fab80000000
+Intial allocator: 1
+Start run ....
+before bulkload, load 400000000keys
+end bulkload
+Start testing ....
+Data loaded: 400000000
+wrong get: 0
+[Metic-Operate]: Operate 10000000 insert_ratio 0: cost 4.23823s, iops 2.35948e+06 .
+Data loaded: 400000000
+wrong get: 0
+[Metic-Operate]: Operate 10000000 insert_ratio 1: cost 7.10723s, iops 1.40702e+06 .

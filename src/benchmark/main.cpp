@@ -46,11 +46,11 @@ Tree<T, P>* generate_index(){
     if (recover)
     {
       index = reinterpret_cast<Tree<T, P>*>(reinterpret_cast<char*>(*index_ptr) + 48);
-      new (index) alex::Apex<T, P>(recover);
+      new (index) apex::Apex<T, P>(recover);
     }else{ 
-      my_alloc::BasePMPool::ZAllocate(reinterpret_cast<void**>(index_ptr), sizeof(alex::Apex<T, P>) + 64);
+      my_alloc::BasePMPool::ZAllocate(reinterpret_cast<void**>(index_ptr), sizeof(apex::Apex<T, P>) + 64);
       index = reinterpret_cast<Tree<T, P>*>(reinterpret_cast<char*>(*index_ptr) + 48);     
-      new (index) alex::Apex<T, P>();
+      new (index) apex::Apex<T, P>();
     }
   }else{
     std::cerr << "No index is matched." << std::endl;
@@ -163,7 +163,7 @@ void Run(){
   }
 
   if(!skip_bulkload){
-    std::cout << "Start the bulk load" << std::endl;
+    std::cout << "Start the bulk load, init_num_keys: " << init_num_keys << std::endl;
     std::cout << "The min key = " << values[0].first << std::endl;
     std::cout << "The max key = " << values[init_num_keys - 1].first << std::endl;
     index->bulk_load(values, init_num_keys);

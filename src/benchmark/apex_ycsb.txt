@@ -1,0 +1,101 @@
+2022年 05月 11日 星期三 19:08:42 CST
+THREAD NUMBER:         1
+LOAD_SIZE:             400000000
+PUT_SIZE:              10000000
+GET_SIZE:              10000000
+DB  name:              apex
+Workload:              /home/zzy/dataset/asia-latest.csv
+read 460000000 values from /home/zzy/dataset/generate_random_ycsb.dat in 2312 ms (198.962 M values/s)
+creating a new pool
+pool opened at: 0x7fa600000000
+Intial allocator: 1
+Start run ....
+before bulkload, load 10000000keys
+end bulkload
+Start loading ....
+[Metic-write]: 400000000: cost 5.59562s, iops 1.78711e+06 .
+[Metic-read]: 400000000: cost 1.05254s, iops 1.90017e+06 .
+[Metic-write]: 400000000: cost 7.16955s, iops 1.39479e+06 .
+[Metic-read]: 400000000: cost 1.09728s, iops 1.8227e+06 .
+[Metic-write]: 400000000: cost 5.0002s, iops 1.99992e+06 .
+[Metic-read]: 400000000: cost 1.10445s, iops 1.81085e+06 .
+[Metic-write]: 400000000: cost 8.98631s, iops 1.1128e+06 .
+[Metic-read]: 400000000: cost 1.12595s, iops 1.77628e+06 .
+[Metic-write]: 400000000: cost 4.82918s, iops 2.07074e+06 .
+[Metic-read]: 400000000: cost 1.14485s, iops 1.74696e+06 .
+[Metic-write]: 400000000: cost 5.11839s, iops 1.95374e+06 .
+[Metic-read]: 400000000: cost 1.15909s, iops 1.7255e+06 .
+[Metic-write]: 400000000: cost 12.2051s, iops 819329 .
+[Metic-read]: 400000000: cost 1.14955s, iops 1.73981e+06 .
+[Metic-write]: 400000000: cost 5.1164s, iops 1.9545e+06 .
+[Metic-read]: 400000000: cost 1.16909s, iops 1.71073e+06 .
+[Metic-write]: 400000000: cost 5.11987s, iops 1.95317e+06 .
+[Metic-read]: 400000000: cost 1.18952s, iops 1.68136e+06 .
+[Metic-write]: 400000000: cost 5.25752s, iops 1.90204e+06 .
+[Metic-read]: 400000000: cost 1.17028s, iops 1.70899e+06 .
+[Metic-write]: 400000000: cost 5.55459s, iops 1.80031e+06 .
+[Metic-read]: 400000000: cost 1.19395s, iops 1.67512e+06 .
+[Metic-write]: 400000000: cost 5.92592s, iops 1.6875e+06 .
+[Metic-read]: 400000000: cost 1.20198s, iops 1.66392e+06 .
+[Metic-write]: 400000000: cost 18.2405s, iops 548231 .
+[Metic-read]: 400000000: cost 1.24073s, iops 1.61196e+06 .
+[Metic-write]: 400000000: cost 5.25475s, iops 1.90304e+06 .
+[Metic-read]: 400000000: cost 1.22042s, iops 1.63878e+06 .
+[Metic-write]: 400000000: cost 5.26931s, iops 1.89778e+06 .
+[Metic-read]: 400000000: cost 1.24632s, iops 1.60472e+06 .
+[Metic-write]: 400000000: cost 5.29365s, iops 1.88906e+06 .
+[Metic-read]: 400000000: cost 1.26483s, iops 1.58124e+06 .
+[Metic-write]: 400000000: cost 5.35942s, iops 1.86587e+06 .
+[Metic-read]: 400000000: cost 1.24313s, iops 1.60884e+06 .
+[Metic-write]: 400000000: cost 5.43645s, iops 1.83944e+06 .
+[Metic-read]: 400000000: cost 1.243s, iops 1.60901e+06 .
+[Metic-write]: 400000000: cost 5.75913s, iops 1.73637e+06 .
+[Metic-read]: 400000000: cost 1.64217s, iops 1.2179e+06 .
+[Metic-write]: 400000000: cost 5.9828s, iops 1.67146e+06 .
+[Metic-read]: 400000000: cost 1.31274s, iops 1.52353e+06 .
+[Metic-write]: 400000000: cost 5.95356s, iops 1.67967e+06 .
+[Metic-read]: 400000000: cost 1.28209s, iops 1.55996e+06 .
+[Metic-write]: 400000000: cost 6.29853s, iops 1.58767e+06 .
+[Metic-read]: 400000000: cost 1.31433s, iops 1.52169e+06 .
+[Metic-write]: 400000000: cost 8.24306s, iops 1.21314e+06 .
+[Metic-read]: 400000000: cost 1.35121s, iops 1.48016e+06 .
+[Metic-write]: 400000000: cost 25.0598s, iops 399045 .
+[Metic-read]: 400000000: cost 1.30414s, iops 1.53358e+06 .
+[Metic-write]: 400000000: cost 5.84845s, iops 1.70985e+06 .
+[Metic-read]: 400000000: cost 1.36921s, iops 1.46069e+06 .
+[Metic-write]: 400000000: cost 5.94294s, iops 1.68267e+06 .
+[Metic-read]: 400000000: cost 1.27438s, iops 1.56939e+06 .
+[Metic-write]: 400000000: cost 5.78104s, iops 1.72979e+06 .
+[Metic-read]: 400000000: cost 1.2825s, iops 1.55945e+06 .
+[Metic-write]: 400000000: cost 5.79331s, iops 1.72613e+06 .
+[Metic-read]: 400000000: cost 1.2837s, iops 1.558e+06 .
+[Metic-write]: 400000000: cost 5.8455s, iops 1.71072e+06 .
+[Metic-read]: 400000000: cost 1.31972s, iops 1.51548e+06 .
+[Metic-write]: 400000000: cost 5.86782s, iops 1.70421e+06 .
+[Metic-read]: 400000000: cost 1.29673s, iops 1.54234e+06 .
+[Metic-write]: 400000000: cost 5.87777s, iops 1.70133e+06 .
+[Metic-read]: 400000000: cost 1.30131s, iops 1.53691e+06 .
+[Metic-write]: 400000000: cost 5.96802s, iops 1.6756e+06 .
+[Metic-read]: 400000000: cost 1.31441s, iops 1.5216e+06 .
+[Metic-write]: 400000000: cost 6.00763s, iops 1.66455e+06 .
+[Metic-read]: 400000000: cost 1.31034s, iops 1.52632e+06 .
+[Metic-write]: 400000000: cost 6.08388s, iops 1.64369e+06 .
+[Metic-read]: 400000000: cost 1.33039s, iops 1.50332e+06 .
+[Metic-write]: 400000000: cost 6.4958s, iops 1.53946e+06 .
+[Metic-read]: 400000000: cost 1.34506s, iops 1.48693e+06 .
+[Metic-write]: 400000000: cost 6.69267s, iops 1.49417e+06 .
+[Metic-read]: 400000000: cost 1.35124s, iops 1.48013e+06 .
+[Metic-write]: 400000000: cost 6.87267s, iops 1.45504e+06 .
+[Metic-read]: 400000000: cost 1.38037s, iops 1.44889e+06 .
+[Metic-write]: 400000000: cost 6.80706s, iops 1.46906e+06 .
+[Metic-read]: 400000000: cost 1.36611s, iops 1.46401e+06 .
+[Metic-write]: 400000000: cost 7.15096s, iops 1.39841e+06 .
+[Metic-read]: 400000000: cost 1.40358s, iops 1.42493e+06 .
+[Metic-Load]: Load 400000000: cost 1.3e-05s, iops 3.07692e+13 .
+Start testing ....
+Data loaded: 400000000
+wrong get: 0
+[Metic-Operate]: Operate 10000000 insert_ratio 0: cost 7.14316s, iops 1.39994e+06 .
+Data loaded: 400000000
+wrong get: 0
+[Metic-Operate]: Operate 10000000 insert_ratio 1: cost 7.57461s, iops 1.3202e+06 .

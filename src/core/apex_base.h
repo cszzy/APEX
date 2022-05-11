@@ -75,7 +75,7 @@ typedef unsigned __int32 uint32_t;
   } while (0)
 
 
-namespace alex {
+namespace apex {
   
 // global statistics about #insert/search iterations
 uint64_t insert_iterations = 0;

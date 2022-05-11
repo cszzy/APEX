@@ -12,7 +12,7 @@
 #include "apex_base.h"
 #include "apex_nodes.h"
 
-namespace alex {
+namespace apex {
 
 namespace fanout_tree {
 
@@ -737,4 +737,4 @@ int find_best_fanout_existing_node_without_parent(AlexDataNode<T, P>* node, int 
 
 }  // namespace fanout_tree
 
-}  // namespace alex
+}  // namespace apex

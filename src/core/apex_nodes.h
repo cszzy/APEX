@@ -50,7 +50,7 @@
 // pre-Haswell), set this to 0.
 #define ALEX_USE_LZCNT 1
 
-namespace alex {
+namespace apex {
 // A parent class for both types of ALEX nodes
 template <class T, class P>
 class AlexNode {

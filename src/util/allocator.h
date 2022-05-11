@@ -9,9 +9,11 @@
 #include <string>
 #include <sys/stat.h>
 
-#include "libpmem.h"
-#include "libpmemobj.h"
-#include <garbage_list.h>
+// #include "../pmdk/src/include/libpmem.h"
+// #include "../pmdk/src/include/libpmemobj.h"
+#include "../epoch/garbage_list.h"
+#include <libpmem.h>
+#include <libpmemobj.h>
 
 #include "utils.h"
  
@@ -21,7 +23,7 @@
 
 static const char* layout_name = "template_pool";
 static const uint64_t pool_addr = 0x5f0000000000;
-static const char* pool_name = "/mnt/pmem0/baotong/template.data";
+static const char* pool_name = "/mnt/AEP0/template.data";
 static const uint64_t pool_size = 40UL * 1024*1024*1024;
 
 namespace my_alloc{
@@ -54,8 +56,8 @@ public:
         bool recover = false;
         if (!FileExists(pool_name)) {
             LOG("creating a new pool");
-            pm_pool_ = pmemobj_create_addr(pool_name, layout_name, pool_size,
-                                            CREATE_MODE_RW, (void*)pool_addr);
+            pm_pool_ = pmemobj_create(pool_name, layout_name, pool_size,
+                                            CREATE_MODE_RW);
             if (pm_pool_ == nullptr) {
                 LOG_FATAL("failed to create a pool;");
             }
@@ -64,7 +66,7 @@ public:
             LOG("opening an existing pool, and trying to map to same address");
             /* Need to open an existing persistent pool */
             recover = true;
-            pm_pool_ = pmemobj_open_addr(pool_name, layout_name, (void*)pool_addr);
+            pm_pool_ = pmemobj_open(pool_name, layout_name);
             if (pm_pool_ == nullptr) {
                 LOG_FATAL("failed to open the pool");
             }

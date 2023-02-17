@@ -15,8 +15,8 @@
 #include "apex_base.h"
 #include "apex_fanout_tree.h"
 #include "apex_nodes.h"
-#include "../util/allocator.h"
-#include "../tree.h"
+#include "util/allocator.h"
+#include "tree.h"
 
 // Whether we account for floating-point precision issues when traversing down
 // APEX.
@@ -33,7 +33,7 @@ uint64_t model_node_size = 0;
 template <class T, class P, class Compare = AlexCompare,
           class Alloc = my_alloc::allocator<std::pair<T, P>>,
           bool allow_duplicates = true>
-class Apex : public Tree<T, P> {
+class Apex : public ApexTree<T, P> {
   static_assert(std::is_arithmetic<T>::value, "ALEX key type must be numeric.");
   static_assert(std::is_same<Compare, AlexCompare>::value,
                 "Must use AlexCompare.");

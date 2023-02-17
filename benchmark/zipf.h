@@ -5,6 +5,9 @@
 // https://github.com/brianfrankcooper/YCSB/blob/master/core/src/main/java/site/ycsb/generator/ScrambledZipfianGenerator.java
 // https://github.com/brianfrankcooper/YCSB/blob/master/core/src/main/java/site/ycsb/generator/ZipfianGenerator.java
 
+#include <cmath>
+#include <random>
+
 class ScrambledZipfianGenerator {
  public:
   static constexpr double ZETAN = 26.46902820178302;

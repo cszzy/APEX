@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdint.h>
-
+#include <thread>
 #include <cstdint>
 #include <iostream>
 
@@ -16,24 +16,22 @@
 #define HASH 1
 
 static constexpr const uint32_t kCacheLineSize = 64;
-
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#define TIME_NOW (std::chrono::high_resolution_clock::now())
 static bool FileExists(const char *pool_path) {
   struct stat buffer;
   return (stat(pool_path, &buffer) == 0);
 }
 
 #ifdef PMEM
-#define CREATE_MODE_RW (S_IWUSR | S_IRUSR)
+#define CREATE_MODE_RW_ (S_IWUSR | S_IRUSR)
 
 //POBJ_LAYOUT_BEGIN(allocator);
 //POBJ_LAYOUT_TOID(allocator, char)
 //POBJ_LAYOUT_END(allocator)
 
 #endif
-
-#define LOG_FATAL(msg)      \
-  std::cout << msg << "\n"; \
-  exit(-1)
 
 #define LOG(msg) std::cout << msg << "\n"
 
@@ -159,3 +157,14 @@ void clwbmore(void *start, void *end)
 static inline
 void sfence(void)
 { asm volatile("sfence"); }
+
+static inline void bindCore(uint16_t core) {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(core, &cpuset);
+    int rc = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+    if (rc != 0) {
+        printf("can't bind core %d!", core);
+        exit(-1);
+    }
+}

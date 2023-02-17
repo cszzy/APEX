@@ -8,7 +8,7 @@
 
 #include "libpmem.h"
 #include "libpmemobj.h"
-#include "../util/allocator.h"
+#include "util/allocator.h"
 
 // LOG descriptor, specific to APEX, the idea is somewhat similar to micro-log used in FPTree
 

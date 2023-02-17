@@ -1,18 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
-project(alex)
+project(apex)
 
 set(CMAKE_CXX_STANDARD 14)
 include(FetchContent)
 include(ExternalProject)
 
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "/O2 /arch:AVX2 /W1 /EHsc")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "-O3 -xHost")
-else()
-    # clang and gcc
-    set(CMAKE_CXX_FLAGS "-lnuma -lrt -lpthread -ldl -mrtm -msse4.1 -mavx2 -O3 -g -march=native")
-endif()
+set(CMAKE_CXX_FLAGS "-lnuma -lrt -lpthread -ldl -mrtm -msse4.1 -mavx2 -O3 -g -march=native")
 
 add_definitions(-DPMEM)
 add_definitions(-DPMDK)
@@ -51,19 +44,12 @@ if (NOT epoch_reclaimer_POPULATED)
   include_directories(${epoch_reclaimer_SOURCE_DIR})
 endif ()
 
-include_directories(src/core)
-list(APPEND libs_to_link pmemobj pmem tbb papi tcmalloc_minimal)
+include_directories(include)
+include_directories(benchmark)
+include_directories(include/util)
+include_directories(src)
+list(APPEND libs_to_link pmemobj pmem tbb papi tcmalloc_minimal numa pthread)
 
-add_executable(benchmark src/benchmark/main.cpp)            
-add_dependencies(benchmark PMDK)
-target_link_libraries(benchmark PRIVATE ${libs_to_link})
-
-#add_executable(partition src/benchmark/partition.cpp)
-#add_dependencies(partition PMDK)
-#target_link_libraries(partition PRIVATE ${libs_to_link})
-
-#set(MAX_FREEZE_RETRY 1 CACHE STRING "MAX retry on frozen node")
-#target_compile_definitions(lbtree-test PRIVATE MAX_FREEZE_RETRY=${MAX_FREEZE_RETRY})
-#set(ENABLE_MERGE 0 CACHE STRING "MAX retry on frozen node")
-#message(STATUS "ENABLE_MERGE: " ${ENABLE_MERGE})
-#target_compile_definitions(lbtree-test PRIVATE ENABLE_MERGE=${ENABLE_MERGE})
+add_executable(nali_multi_bench benchmark/multi_bench.cpp)       
+add_dependencies(nali_multi_bench PMDK)
+target_link_libraries(nali_multi_bench PRIVATE ${libs_to_link})

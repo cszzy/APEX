@@ -5,6 +5,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
 std::map<std::string, std::string> parse_flags(int argc, char** argv) {
   std::map<std::string, std::string> flags;

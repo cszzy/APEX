@@ -3869,12 +3869,12 @@ public:
   void recover_node(uint32_t global_version){ 
     //std::cout << "First need to get the lock" << std::endl;
     std::cout << "recover node" << std::endl;
-    while (pmemobj_mutex_trylock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(nali::thread_id)], &recover_lock_) != 0) {
+    while (pmemobj_mutex_trylock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(global_thread_id)], &recover_lock_) != 0) {
       if(local_version_ == global_version) return;
     }
 
     if(local_version_ == global_version){
-      pmemobj_mutex_unlock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(nali::thread_id)], &recover_lock_);
+      pmemobj_mutex_unlock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(global_thread_id)], &recover_lock_);
       return;
     }
 
@@ -3998,7 +3998,7 @@ public:
     }  
     local_version_ = global_version;
     my_alloc::BasePMPool::Persist(this, sizeof(self_type));
-    pmemobj_mutex_unlock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(nali::thread_id)], &recover_lock_);
+    pmemobj_mutex_unlock(my_alloc::BasePMPool::pm_pool_[nali::get_numa_id(global_thread_id)], &recover_lock_);
   }
 
   /*** Stats ***/

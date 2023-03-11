@@ -17,6 +17,9 @@
 
 // 每个线程分配自己的page用于追加写，每个page 64MB，定期垃圾回收
 
+extern int8_t global_numa_map[64]; // 64个core
+extern thread_local size_t global_thread_id; // each index use it for pmem alloc
+
 namespace nali {
     
 const int numa_max_node = 8; 
@@ -25,8 +28,6 @@ const int numa_node_num = 2; // current machine numa nodes
 
 const int max_thread_num = 64; // 每个numa节点32threads
 
-extern thread_local size_t thread_id;
-extern int8_t numa_map[max_thread_num];
 
 /**
  * $ lscpu
@@ -35,24 +36,24 @@ extern int8_t numa_map[max_thread_num];
 */
 static inline void init_numa_map() {
     for (int i = 0; i < 16; i++) {
-        numa_map[i] = 0;
+        global_numa_map[i] = 0;
     }
 
     for (int i = 16; i < 32; i++) {
-        numa_map[i] = 1;
+        global_numa_map[i] = 1;
     }
 
     for (int i = 32; i < 48; i++) {
-        numa_map[i] = 0;
+        global_numa_map[i] = 0;
     }
 
     for (int i = 48; i < 64; i++) {
-        numa_map[i] = 1;
+        global_numa_map[i] = 1;
     }
 }
 
 static inline int8_t get_numa_id(size_t thread_id) {
-    return numa_map[thread_id];
+    return global_numa_map[thread_id];
 }
 
 // // for test index numa_alloc
@@ -80,7 +81,7 @@ static inline int8_t get_numa_id(size_t thread_id) {
 
 // static inline void *alloc(PMEMobjpool** pop, size_t size) {
 //     PMEMoid p;
-//     pmemobj_alloc(pop[get_numa_id(nali::thread_id)], &p, size, 0, NULL, NULL);
+//     pmemobj_alloc(pop[get_numa_id(global_thread_id)], &p, size, 0, NULL, NULL);
 //     return pmemobj_direct(p);
 // }
 

@@ -2,3 +2,5 @@
 .vscode
 *.svg
 /script/*.txt
+/script/*/*.txt
+*.out

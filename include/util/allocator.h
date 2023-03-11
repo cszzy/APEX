@@ -15,6 +15,11 @@
 
 #include "utils.h"
  
+// #define STATISTIC_PMEM_USE
+#ifdef STATISTIC_PMEM_USE
+extern std::atomic<size_t> pmem_alloc_bytes;
+#endif
+
 // In this class, I will write a custom template allocator
 // Specifically, it allocates persistent memory using PMDK interface
 // Moreover, need to use static member to make all allocatoion in a single memory pool
@@ -45,7 +50,7 @@ public:
     GarbageList garbage_list_[nali::numa_node_num];
 
     static bool Initialize(const char* pool_name, size_t pool_size){
-        //if(pm_pool_[nali::get_numa_id(nali::thread_id)] == nullptr){
+        //if(pm_pool_[nali::get_numa_id(global_thread_id)] == nullptr){
         bool recover = false;
         const std::string pool_path_ = "/mnt/pmem";
         for (int i = 0; i < nali::numa_node_num; i++) {
@@ -59,7 +64,7 @@ public:
         instance_ = new BasePMPool();
         for (int i = 0; i < nali::numa_node_num; i++) {
             instance_->epoch_manager_[i].Initialize();
-            instance_->garbage_list_[i].Initialize(&instance_->epoch_manager_[i], instance_->pm_pool_[nali::get_numa_id(nali::thread_id)], 1024 * 8);
+            instance_->garbage_list_[i].Initialize(&instance_->epoch_manager_[i], instance_->pm_pool_[nali::get_numa_id(global_thread_id)], 1024 * 8);
         }
 
         IncreaseAllocatorNum();
@@ -75,18 +80,21 @@ public:
     }
 
     static void ClosePool(){
-        if(pm_pool_[nali::get_numa_id(nali::thread_id)] != nullptr){
-            pmemobj_close(pm_pool_[nali::get_numa_id(nali::thread_id)]);
+        if(pm_pool_[nali::get_numa_id(global_thread_id)] != nullptr){
+            pmemobj_close(pm_pool_[nali::get_numa_id(global_thread_id)]);
         }
     }
 
     static void* GetRoot(size_t size) {
-        return pmemobj_direct(pmemobj_root(pm_pool_[nali::get_numa_id(nali::thread_id)], size));
+        return pmemobj_direct(pmemobj_root(pm_pool_[nali::get_numa_id(global_thread_id)], size));
     }
 
     static void AlignAllocate(void** ptr, size_t size){
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
         PMEMoid tmp_ptr;
-        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(nali::thread_id)], &tmp_ptr, size + 64, TOID_TYPE_NUM(char), NULL, NULL);
+        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(global_thread_id)], &tmp_ptr, size + 64, TOID_TYPE_NUM(char), NULL, NULL);
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -96,8 +104,11 @@ public:
     }
 
     static void AlignZAllocate(void** ptr, size_t size){
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
         PMEMoid tmp_ptr;
-        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(nali::thread_id)], &tmp_ptr, size + 64, TOID_TYPE_NUM(char));
+        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(global_thread_id)], &tmp_ptr, size + 64, TOID_TYPE_NUM(char));
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -113,8 +124,11 @@ public:
 
     //Need to address this
     static void Allocate(void** ptr, size_t size){
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
         PMEMoid tmp_ptr;
-        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(nali::thread_id)], &tmp_ptr, size, TOID_TYPE_NUM(char), NULL, NULL);
+        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(global_thread_id)], &tmp_ptr, size, TOID_TYPE_NUM(char), NULL, NULL);
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -123,8 +137,11 @@ public:
     }
 
     static void ZAllocate(void** ptr, size_t size){
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
         PMEMoid tmp_ptr;
-        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(nali::thread_id)], &tmp_ptr, size, TOID_TYPE_NUM(char));
+        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(global_thread_id)], &tmp_ptr, size, TOID_TYPE_NUM(char));
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -133,7 +150,10 @@ public:
     }
 
     static void Allocate(PMEMoid *ptr, size_t size){
-        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(nali::thread_id)], ptr, size, TOID_TYPE_NUM(char), NULL, NULL);
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
+        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(global_thread_id)], ptr, size, TOID_TYPE_NUM(char), NULL, NULL);
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -144,7 +164,10 @@ public:
                        int (*alloc_constr)(PMEMobjpool* pool, void* ptr,
                                            void* arg),
                        void* arg) {
-    auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(nali::thread_id)], pm_ptr, size,
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
+        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(global_thread_id)], pm_ptr, size,
                              TOID_TYPE_NUM(char), alloc_constr, arg);
         if (ret) {
         LOG_FATAL("Allocate Initialize: Allocation Error in PMEMoid");
@@ -152,7 +175,10 @@ public:
     }
 
     static void ZAllocate(PMEMoid *ptr, size_t size){
-        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(nali::thread_id)], ptr, size, TOID_TYPE_NUM(char));
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += size;
+        #endif
+        auto ret = pmemobj_zalloc(pm_pool_[nali::get_numa_id(global_thread_id)], ptr, size, TOID_TYPE_NUM(char));
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << size << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 1");
@@ -167,7 +193,7 @@ public:
     }
 
     static void Persist(void* p, size_t size){
-        pmemobj_persist(pm_pool_[nali::get_numa_id(nali::thread_id)], p, size);
+        pmemobj_persist(pm_pool_[nali::get_numa_id(global_thread_id)], p, size);
     }
 
     static void DefaultPMCallback(void* callback_context, void* ptr) {
@@ -183,35 +209,35 @@ public:
 
     static void SafeFree(void* ptr, DestroyCallback callback = DefaultPMCallback,
                     void* context = nullptr) {
-        instance_->garbage_list_[nali::get_numa_id(nali::thread_id)].Push(ptr, callback, context);
+        instance_->garbage_list_[nali::get_numa_id(global_thread_id)].Push(ptr, callback, context);
     }
 
     static void SafeFree(GarbageList::Item* item, void* ptr,
                     DestroyCallback callback = DefaultPMCallback,
                     void* context = nullptr) {
-        item->SetValue(ptr, instance_->epoch_manager_[nali::get_numa_id(nali::thread_id)].GetCurrentEpoch(), callback,
+        item->SetValue(ptr, instance_->epoch_manager_[nali::get_numa_id(global_thread_id)].GetCurrentEpoch(), callback,
                     context);
     }
 
     static EpochGuard AquireEpochGuard() {
-        return EpochGuard{&instance_->epoch_manager_[nali::get_numa_id(nali::thread_id)]};
+        return EpochGuard{&instance_->epoch_manager_[nali::get_numa_id(global_thread_id)]};
     }
 
-    static void Protect() { instance_->epoch_manager_[nali::get_numa_id(nali::thread_id)].Protect(); }
+    static void Protect() { instance_->epoch_manager_[nali::get_numa_id(global_thread_id)].Protect(); }
 
-    static void Unprotect() { instance_->epoch_manager_[nali::get_numa_id(nali::thread_id)].Unprotect(); }
+    static void Unprotect() { instance_->epoch_manager_[nali::get_numa_id(global_thread_id)].Unprotect(); }
 
     static GarbageList::Item* ReserveItem() {
-        return instance_->garbage_list_[nali::get_numa_id(nali::thread_id)].ReserveItem();
+        return instance_->garbage_list_[nali::get_numa_id(global_thread_id)].ReserveItem();
     }
 
     static void ResetItem(GarbageList::Item* mem) {
-        instance_->garbage_list_[nali::get_numa_id(nali::thread_id)].ResetItem(mem);
+        instance_->garbage_list_[nali::get_numa_id(global_thread_id)].ResetItem(mem);
     }
 
     static void EpochRecovery() {
-        instance_->garbage_list_[nali::get_numa_id(nali::thread_id)].Recovery(&instance_->epoch_manager_[nali::get_numa_id(nali::thread_id)],
-                                        instance_->pm_pool_[nali::get_numa_id(nali::thread_id)]);
+        instance_->garbage_list_[nali::get_numa_id(global_thread_id)].Recovery(&instance_->epoch_manager_[nali::get_numa_id(global_thread_id)],
+                                        instance_->pm_pool_[nali::get_numa_id(global_thread_id)]);
     }
 };
 
@@ -264,8 +290,11 @@ public:
 	//pointer allocate(size_type n, const void* hint=0){
     pointer allocate(size_type n){
         //FIXME: non-safe memory allocation
+        #ifdef STATISTIC_PMEM_USE
+        pmem_alloc_bytes += n;
+        #endif
         PMEMoid tmp_ptr;
-        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(nali::thread_id)], &tmp_ptr, (size_t)(n * sizeof(T)), TOID_TYPE_NUM(char), NULL, NULL);
+        auto ret = pmemobj_alloc(pm_pool_[nali::get_numa_id(global_thread_id)], &tmp_ptr, (size_t)(n * sizeof(T)), TOID_TYPE_NUM(char), NULL, NULL);
         if (ret) {
           std::cout << "Fail logging: " << ret << "; Size = " << n *sizeof(T) << std::endl;
           LOG_FATAL("Allocate: Allocation Error in PMEMoid 2");
